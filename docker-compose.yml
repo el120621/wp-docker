@@ -1,0 +1,49 @@
+
+services:
+  db:
+    container_name: projectname_db
+    image: mariadb:latest
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./wp-data:/var/lib/mysql
+
+  php:
+    container_name: projectname_php
+    image: php:8.2-fpm
+    env_file:
+      - ./.env
+    restart: unless-stopped
+    build: ./
+    volumes:
+      - ./src:/app
+      - ./server-conf/php:/usr/local/etc/php/conf.d/
+
+  nginx:
+    container_name: projectname_nginx
+    depends_on:
+      - db
+    image: nginx
+    links:
+      - php   
+    ports:
+      - '80:80'
+    volumes:
+      - ./src:/app
+      - ./wp-app/logs/nginx:/app/logs/nginx
+      - ./server-conf/nginx:/etc/nginx/conf.d
+
+  phpmyadmin:
+    container_name: projectname_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    ports:
+      - '8080:80'
+    
