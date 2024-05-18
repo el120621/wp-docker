@@ -1,7 +1,7 @@
 
 services:
   db:
-    container_name: projectname_db
+    container_name: ${APP_NAME}_db
     image: mariadb:latest
     restart: unless-stopped
     environment:
@@ -15,7 +15,7 @@ services:
       - ./wp-data:/var/lib/mysql
 
   php:
-    container_name: projectname_php
+    container_name: ${APP_NAME}_php
     image: php:8.2-fpm
     env_file:
       - ./.env
@@ -26,7 +26,7 @@ services:
       - ./server-conf/php:/usr/local/etc/php/conf.d/
 
   nginx:
-    container_name: projectname_nginx
+    container_name: ${APP_NAME}_nginx
     depends_on:
       - db
     image: nginx
@@ -40,7 +40,7 @@ services:
       - ./server-conf/nginx:/etc/nginx/conf.d
 
   phpmyadmin:
-    container_name: projectname_phpmyadmin
+    container_name: ${APP_NAME}_phpmyadmin
     image: phpmyadmin/phpmyadmin
     links:
       - db
