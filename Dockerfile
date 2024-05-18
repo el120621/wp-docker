@@ -3,6 +3,8 @@ RUN apt-get update && apt-get install -y \
 		libfreetype-dev \
 		libjpeg62-turbo-dev \
 		libpng-dev \
+		unzip \
+		git \
 	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
 	&& docker-php-ext-install mysqli -j$(nproc) gd
 WORKDIR /app
